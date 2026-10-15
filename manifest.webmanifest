@@ -8,7 +8,7 @@
   "id": "./index.html",
   "display": "fullscreen",
   "display_override": ["fullscreen", "standalone"],
-  "orientation": "any",
+  "orientation": "landscape",
   "background_color": "#DDF3FF",
   "theme_color": "#DDF3FF",
   "categories": ["education", "kids", "games"],

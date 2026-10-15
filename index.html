@@ -104,6 +104,12 @@ button:focus-visible { outline: 4px solid var(--grape); outline-offset: 3px; }
 .draw-wrap.full .toolbar .pill { flex: none; min-height: 46px; }
 body.noscroll { overflow: hidden; }
 
+/* Ajakan memutar layar: game dirancang mendatar (landscape) di HP dan tablet */
+.rotate { display: none; position: fixed; inset: 0; z-index: 9999; background: #DDF3FF; color: #1F3A5F; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 24px; font-family: 'Baloo 2', 'Nunito', sans-serif; font-weight: 800; font-size: 26px; }
+.rotate svg { width: 120px; height: 120px; animation: tilt 2.4s ease-in-out infinite; }
+@keyframes tilt { 0%, 15% { transform: rotate(0); } 55%, 100% { transform: rotate(-90deg); } }
+@media (orientation: portrait) and (pointer: coarse) { .rotate { display: flex; } }
+
 /* Layar mendatar (landscape) di HP: tata letak dua kolom agar tidak perlu menggulir */
 @media (orientation: landscape) and (max-height: 560px) {
   body { padding-block: 6px 70px; }
@@ -254,6 +260,11 @@ body.noscroll { overflow: hidden; }
   <path class="w1" d="M0 26 Q50 6 100 26 T200 26 T300 26 T400 26 T500 26 T600 26 T700 26 T800 26 V80 H0Z"/>
   <path class="w2" d="M0 44 Q50 26 100 44 T200 44 T300 44 T400 44 T500 44 T600 44 T700 44 T800 44 V80 H0Z"/>
 </svg>
+
+<div id="rotate" class="rotate" role="alert">
+  <svg viewBox="0 0 120 120" aria-hidden="true"><rect x="36" y="10" width="48" height="100" rx="10" fill="#fff" stroke="#1F3A5F" stroke-width="5"/><circle cx="60" cy="98" r="4" fill="#1F3A5F"/><path d="M48 40 Q60 24 72 40 Q60 62 48 40Z" fill="#4DA3FF"/></svg>
+  <div>Putar HP-mu ke samping ya!</div>
+</div>
 
 <div id="welcome" class="welcome">
   <div id="welcomeArt"></div>
@@ -823,7 +834,10 @@ body.noscroll { overflow: hidden; }
   function enterFS(el) {
     var f = el.requestFullscreen || el.webkitRequestFullscreen;
     if (!f) return;
-    try { var p = f.call(el); if (p && p.catch) p.catch(function () {}); } catch (e) {}
+    try { var p = f.call(el); if (p && p.then) p.then(lockLandscape, function () {}); else lockLandscape(); } catch (e) {}
+  }
+  function lockLandscape() {
+    try { var o = screen.orientation; if (o && o.lock) { var q = o.lock('landscape'); if (q && q.catch) q.catch(function () {}); } } catch (e) {}
   }
   function exitFS() {
     var f = document.exitFullscreen || document.webkitExitFullscreen;
@@ -1001,6 +1015,7 @@ body.noscroll { overflow: hidden; }
     ctx();
     pickVoice();
     $('#welcome').hidden = true;
+    lockLandscape();
     sfx.good();
     say('Halo teman! Ayo main bersama Bilal!');
   });

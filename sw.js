@@ -1,5 +1,5 @@
 /* Service worker: menyimpan seluruh game agar bisa dimainkan tanpa internet. File ini dibuat otomatis. */
-const CACHE = 'main-bilal-318d6f2c8a';
+const CACHE = 'main-bilal-6f05417f64';
 const ASSETS = [
  "./",
  "index.html",
