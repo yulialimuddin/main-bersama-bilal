@@ -110,46 +110,6 @@ body.noscroll { overflow: hidden; }
 @keyframes tilt { 0%, 15% { transform: rotate(0); } 55%, 100% { transform: rotate(-90deg); } }
 @media (orientation: portrait) and (pointer: coarse) { .rotate { display: flex; } }
 
-/* Layar mendatar (landscape) di HP: tata letak dua kolom agar tidak perlu menggulir */
-@media (orientation: landscape) and (max-height: 560px) {
-  body { padding-block: 6px 70px; }
-  .top { padding-block: 2px 4px; }
-  .brand { font-size: 1.6rem; }
-  .lead { margin: 2px 0 10px; font-size: 1rem; }
-  .menu { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
-  .menu-btn { min-height: 140px; font-size: 1.05rem; border-radius: 24px; }
-  .menu-btn svg { width: min(80px, 100%); }
-  .pill { min-height: 44px; padding: 6px 14px; }
-  #play { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-areas: "bar bar" "stage prompt" "stage hint" "stage answers"; column-gap: 20px; align-items: start; }
-  #play .bar { grid-area: bar; }
-  #promptText { grid-area: prompt; margin: 4px 0; font-size: 1.9rem; align-self: end; }
-  #hint { grid-area: hint; margin: 0; }
-  #stage { grid-area: stage; margin: 4px 0; }
-  #answers { grid-area: answers; margin-top: 8px; gap: 10px; }
-  #play:has(#answers:empty) { grid-template-areas: "bar bar" "prompt prompt" "hint hint" "stage stage"; }
-  #play:has(#stage:empty) { grid-template-areas: "bar bar" "prompt prompt" "hint hint" "answers answers"; }
-  #play:has(#stage:empty) #answers { max-width: 720px; margin-inline: auto; width: 100%; }
-  .ans { min-height: 90px; padding: 8px; }
-  .ans.num { font-size: 3rem; min-height: 90px; }
-  .ans svg { max-height: 100px; }
-  .friends { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-  .friend svg { max-width: 110px; }
-  .paint { flex-direction: row; justify-content: center; align-items: center; gap: 20px; }
-  .canvas { width: auto; max-width: none; padding: 6px; }
-  .canvas svg { height: calc(100dvh - 240px); width: auto; max-width: 52vw; }
-  .paint-side { max-width: 250px; gap: 12px; }
-  .swatch { width: 46px; height: 46px; }
-  .palette { gap: 10px; }
-  .choose { max-width: 520px; }
-  .choice svg { width: 90px; }
-  .pad canvas { height: calc(100dvh - 200px); min-height: 160px; }
-  .toolbar { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-  .draw-wrap.full .toolbar { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; max-height: none; justify-content: safe center; }
-  .draw-wrap.full .palette, .draw-wrap.full .sizes { flex-wrap: nowrap; flex: none; }
-  .draw-wrap.full .swatch, .draw-wrap.full .size { width: 40px; height: 40px; }
-  .draw-wrap.full .toolbar .pill { min-height: 40px; }
-}
-
 .parent { margin-top: 22px; padding: 12px 16px; background: var(--card); border-radius: 20px; font-size: .95rem; }
 .parent summary { font-weight: 800; cursor: pointer; min-height: 40px; display: flex; align-items: center; }
 .parent .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
@@ -198,14 +158,108 @@ body.noscroll { overflow: hidden; }
 @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ===== Tampilan mendatar (landscape): satu layar penuh, tanpa gulir ===== */
+.icon-btn.hold { position: relative; touch-action: none; user-select: none; -webkit-user-select: none; }
+.icon-btn svg { width: 24px; height: 24px; }
+.icon-btn.hold svg { width: 100%; height: 100%; padding: 0; }
+.icon-btn.hold .ring { stroke-dashoffset: 120; }
+.icon-btn.holding .ring { animation: ring .6s linear forwards; }
+.icon-btn.nudge { animation: nudge .35s; }
+@keyframes ring { to { stroke-dashoffset: 0; } }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 30% { transform: translateX(-4px); } 60% { transform: translateX(4px); } }
+body:not(.playing) #backBtn, body:not(.playing) #replayBtn { display: none; }
+.parent .tip { margin: 8px 0 0; font-size: .85rem; font-weight: 600; }
+
+@media (orientation: landscape) {
+  html, body { height: 100%; overflow: hidden; margin: 0; }
+  .friends, .menu, .paint, .draw-wrap, .choose, .pad { box-sizing: border-box; }
+  body { padding-block: 8px 8px; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); }
+  .page { max-width: 1180px; height: calc(100vh - 16px); height: calc(100dvh - 16px); display: flex; flex-direction: column; }
+  .top { flex: none; flex-wrap: nowrap; gap: 10px; padding: 0 0 6px; }
+  .brand { font-size: 1.35rem; white-space: nowrap; }
+  .tools { margin-left: auto; gap: 8px; }
+  .icon-btn { width: 42px; height: 42px; box-shadow: 0 3px 0 var(--line); }
+  .starbox { padding: 3px 12px 3px 8px; font-size: 1.15rem; box-shadow: 0 3px 0 var(--line); }
+  .starbox svg { width: 22px; height: 22px; }
+  .wave { height: 44px; }
+  .note { flex: none; margin: 0 0 6px; padding: 6px 12px; font-size: .85rem; }
+  .pill { min-height: 38px; padding: 4px 14px; font-size: .95rem; box-shadow: 0 3px 0 var(--line); }
+
+  #home { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .lead { display: none; }
+  .menu { flex: 1; min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 8px; }
+  .menu-btn { min-height: 0; height: 100%; padding: 8px 6px 10px; gap: 2px; font-size: clamp(1rem, 3.4vh, 1.45rem); border-radius: 26px; box-shadow: 0 6px 0 var(--cd); overflow: hidden; }
+  .menu-btn svg { flex: 1 1 0; min-height: 0; width: 100%; height: auto; }
+  .parent { position: fixed; left: 50%; transform: translateX(-50%); top: 9px; z-index: 5; margin: 0; padding: 0 12px; border-radius: 999px; font-size: .85rem; box-shadow: 0 3px 0 var(--line); }
+  .parent summary { min-height: 34px; }
+  .parent[open] { border-radius: 18px; padding: 0 12px 10px; width: min(340px, 90vw); }
+  .parent[open] .row { margin-top: 8px; }
+  .parent select { min-height: 38px; }
+
+  #play { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .prompt { flex: none; margin: 2px 0 0; font-size: clamp(1.4rem, 6vh, 2.3rem); }
+  .hint { flex: none; margin: 0 0 4px; font-size: .9rem; }
+  .stage { flex: 1; min-height: 0; margin: 4px 0 8px; display: flex; align-items: center; justify-content: center; }
+  .stage:empty { display: none; }
+  .stage > * { max-height: 100%; }
+  .answers { flex: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0 auto 10px; width: min(100%, 1000px); height: clamp(90px, 28vh, 240px); }
+  #play:has(#stage:empty) .answers { height: clamp(150px, 58vh, 340px); margin-block: auto; }
+  .ans { min-height: 0; height: 100%; padding: 8px; border-radius: 24px; box-shadow: 0 6px 0 var(--line); }
+  .ans.num { min-height: 0; font-size: clamp(2.4rem, 12vh, 4.6rem); }
+  .ans svg { width: auto; height: 100%; max-width: 100%; max-height: 100%; }
+  .items { gap: 12px 18px; }
+  .item { width: clamp(60px, min(26vh, calc((100vw - 90px) / var(--n, 10) - 18px)), 190px); height: auto; aspect-ratio: 88 / 76; }
+
+  .friends { width: 100%; height: 100%; grid-template-columns: repeat(var(--cols, 7), minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 10px 10px; padding-bottom: 6px; }
+  .friend { min-height: 0; padding: 6px 4px 8px; gap: 0; border-radius: 20px; box-shadow: 0 5px 0 var(--line); font-size: clamp(.85rem, 3.1vh, 1.2rem); overflow: hidden; }
+  .friend svg { flex: 1 1 0; min-height: 0; width: 100%; max-width: none; height: auto; }
+  .friend small { font-size: clamp(.7rem, 2.4vh, .9rem); line-height: 1.1; }
+
+  .paint { flex-direction: row; justify-content: center; align-items: center; width: 100%; height: 100%; gap: 24px; }
+  .canvas { flex: none; width: auto; max-width: none; height: calc(100% - 14px); aspect-ratio: 1 / 1; padding: 6px; border-radius: 24px; box-shadow: 0 6px 0 var(--line); }
+  .canvas svg { width: 100%; height: 100%; }
+  .paint-side { max-width: 300px; gap: 14px; }
+  .palette { gap: 10px; }
+  .swatch { width: 44px; height: 44px; border-width: 3px; box-shadow: 0 4px 0 var(--line); }
+  .paint-tools { gap: 10px; }
+
+  .choose { width: 100%; max-width: 620px; height: min(100%, 260px); margin: 0 auto; gap: 18px; }
+  .choice { min-height: 0; padding: 10px 6px; gap: 4px; border-radius: 24px; box-shadow: 0 6px 0 var(--line); font-size: clamp(1rem, 3.6vh, 1.3rem); overflow: hidden; }
+  .choice svg { flex: 1 1 0; min-height: 0; width: 100%; height: auto; }
+
+  .draw-wrap { flex-direction: row; align-items: stretch; width: 100%; height: 100%; gap: 14px; }
+  .pad { flex: 1; max-width: none; min-width: 0; height: calc(100% - 6px); border-radius: 24px; box-shadow: 0 6px 0 var(--line); }
+  .pad canvas { height: 100%; min-height: 0; max-height: none; }
+  .pad .fs-btn, .pad .fs-exit { top: 8px; right: 8px; min-height: 36px; }
+  .toolbar { flex: none; width: 188px; flex-direction: column; justify-content: center; align-items: stretch; gap: 10px; overflow-y: auto; }
+  .toolbar .palette { display: grid; grid-template-columns: repeat(4, 1fr); justify-items: center; gap: 8px 4px; }
+  .toolbar .swatch, .size { width: 38px; height: 38px; }
+  .sizes { gap: 8px; }
+  .toolbar .pill { width: 100%; justify-content: center; flex: none; }
+
+  .draw-wrap.full { flex-direction: row; gap: 10px; }
+  .draw-wrap.full .pad { height: auto; }
+  .draw-wrap.full .pad canvas { height: 100%; }
+  .draw-wrap.full .toolbar { flex-direction: column; flex-wrap: nowrap; width: 188px; max-height: none; overflow-y: auto; overflow-x: hidden; justify-content: center; padding: 4px; gap: 10px; }
+  .draw-wrap.full .palette, .draw-wrap.full .sizes { flex-wrap: wrap; flex: none; }
+  .draw-wrap.full .swatch, .draw-wrap.full .size { width: 38px; height: 38px; }
+  .draw-wrap.full .toolbar .pill { min-height: 38px; }
+}
 </style>
 </head>
 <body>
 
 <div class="page">
   <header class="top">
+    <button id="backBtn" class="icon-btn hold" type="button" aria-label="Kembali (tahan sebentar)" title="Tahan sebentar untuk kembali">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><circle class="ring" cx="22" cy="22" r="19" fill="none" stroke="#2F9BE6" stroke-width="4" stroke-dasharray="120" stroke-dashoffset="120" transform="rotate(-90 22 22)"/><path d="M25 14 L17 22 L25 30" stroke="#1F3A5F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <h1 class="brand">Main Bersama Bilal</h1>
     <div class="tools">
+      <button id="replayBtn" class="icon-btn" type="button" aria-label="Dengar lagi">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12 A7 7 0 1 1 15.5 6" stroke="#1F3A5F" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M13 3 L18 6.5 L13.5 10Z" fill="#1F3A5F"/><path d="M10 9.5 V14.5 L14.2 12Z" fill="#2F9BE6"/></svg>
+      </button>
       <div class="starbox" role="status" aria-label="Jumlah bintang">
         <svg viewBox="0 0 60 60" aria-hidden="true"><polygon points="30,4 37,22 57,23 41,35 47,55 30,43 13,55 19,35 3,23 23,22" fill="#FFD23F" stroke="#E8A800" stroke-width="3" stroke-linejoin="round"/></svg>
         <span id="starCount">0</span>
@@ -226,7 +280,8 @@ body.noscroll { overflow: hidden; }
     <p class="lead">Pilih permainan, lalu sentuh layarnya!</p>
     <div class="menu" id="menu"></div>
     <details class="parent">
-      <summary>Pengaturan suara (untuk orang tua)</summary>
+      <summary>Pengaturan</summary>
+      <p class="tip">Tombol kembali (&lsaquo;) di pojok kiri atas: tahan sebentar untuk kembali ke menu.</p>
       <div class="row"><label for="voiceSel">Suara</label><select id="voiceSel"></select></div>
       <div class="row"><label for="pitchSel">Nada</label>
         <select id="pitchSel">
@@ -239,16 +294,6 @@ body.noscroll { overflow: hidden; }
   </section>
 
   <section id="play" hidden>
-    <div class="bar">
-      <button id="backBtn" class="pill" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19" stroke="#1F3A5F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Kembali
-      </button>
-      <button id="replayBtn" class="pill" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9 H8 L13 5 V19 L8 15 H4Z" fill="#1F3A5F"/><path d="M16 9 Q19 12 16 15" stroke="#1F3A5F" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
-        Dengar lagi
-      </button>
-    </div>
     <h2 id="promptText" class="prompt"></h2>
     <p id="hint" class="hint" hidden></p>
     <div id="stage" class="stage"></div>
@@ -585,6 +630,7 @@ body.noscroll { overflow: hidden; }
   function show(which) {
     $('#home').hidden = which !== 'home';
     $('#play').hidden = which !== 'play';
+    document.body.classList.toggle('playing', which === 'play');
     window.scrollTo(0, 0);
   }
   function setPrompt(text, spoken, hint) {
@@ -617,7 +663,7 @@ body.noscroll { overflow: hidden; }
     locked = false;
     answers.innerHTML = '';
     setPrompt('Sentuh temanmu!', 'Ayo kenalan! Sentuh temanmu.');
-    stage.innerHTML = '<div class="friends">' + ANIMALS.map(function (a, i) {
+    stage.innerHTML = '<div class="friends" style="--cols:' + Math.ceil(ANIMALS.length / 2) + '">' + ANIMALS.map(function (a, i) {
       return '<button class="friend" type="button" data-i="' + i + '">' + a.svg + a.name + '<small>si ' + a.kind + '</small></button>';
     }).join('') + '</div>';
     stage.onclick = function (e) {
@@ -663,7 +709,7 @@ body.noscroll { overflow: hidden; }
     for (var i = 0; i < n; i++) {
       items += '<button class="item" type="button" aria-label="' + kind.noun + '">' + kind.make(kind.cols[i % kind.cols.length]) + '<span class="badge"></span></button>';
     }
-    stage.innerHTML = '<div class="items">' + items + '</div>';
+    stage.innerHTML = '<div class="items" style="--n:' + Math.max(n, 4) + '">' + items + '</div>';
     stage.onclick = function (e) {
       var b = e.target.closest('.item');
       if (!b || b.classList.contains('on')) return;
@@ -865,7 +911,7 @@ body.noscroll { overflow: hidden; }
   }
   function pickPic() {
     setPrompt('Pilih gambarnya!', 'Pilih gambarnya!');
-    stage.innerHTML = '<div class="friends">' + PICS.map(function (p, i) {
+    stage.innerHTML = '<div class="friends" style="--cols:' + Math.ceil(PICS.length / 2) + '">' + PICS.map(function (p, i) {
       return '<button class="friend" type="button" data-i="' + i + '" aria-label="gambar ' + p.n + '">' + p.svg + '</button>';
     }).join('') + '</div>';
     stage.onclick = function (e) {
@@ -994,7 +1040,7 @@ body.noscroll { overflow: hidden; }
     start(b.dataset.m);
   });
 
-  $('#backBtn').addEventListener('click', function () {
+  function goBack() {
     token++;
     clearTimeout(sayTimer);
     try { speechSynthesis.cancel(); } catch (e) {}
@@ -1002,7 +1048,22 @@ body.noscroll { overflow: hidden; }
     stage.onclick = null;
     answers.onclick = null;
     show('home');
-  });
+  }
+  /* Tombol kembali harus ditahan sebentar agar tidak terpencet tidak sengaja oleh anak */
+  (function () {
+    var b = $('#backBtn'), t = null;
+    function stop() { clearTimeout(t); t = null; b.classList.remove('holding'); }
+    b.addEventListener('pointerdown', function () {
+      stop(); b.classList.add('holding');
+      t = setTimeout(function () { stop(); sfx.pop(); goBack(); }, 600);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { b.addEventListener(ev, stop); });
+    b.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    b.addEventListener('click', function (e) {
+      if (e.detail === 0) { goBack(); return; }
+      b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge');
+    });
+  })();
   $('#replayBtn').addEventListener('click', function () { say(cur.say); });
   $('#soundBtn').addEventListener('click', function () {
     soundOn = !soundOn;
